@@ -3,6 +3,7 @@ fun main(args: Array<String>) {
 
     val puzzleFactories = mapOf(
         1 to { Puzzle1() },
+        2 to { Puzzle2() },
     )
 
     val puzzleFactory = puzzleFactories[puzzleNumber]
