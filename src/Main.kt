@@ -14,7 +14,8 @@ fun main(args: Array<String>) {
 
     val puzzle = puzzleFactory()
 
-    println("Running puzzle #$puzzleNumber")
+    println("\n*** ADVENT OF CODE 2024 ***")
+    println("***Day #$puzzleNumber ***\n")
     println("Part 1 solution: ${puzzle.part1()}")
     println("Part 2 solution: ${puzzle.part2()}")
 }

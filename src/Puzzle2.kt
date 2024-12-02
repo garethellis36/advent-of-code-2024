@@ -6,14 +6,15 @@ typealias Report = List<Level>
 
 class Puzzle2 : Puzzle {
     override fun part1(): Int {
-        return reports()
-            .map { report -> isSafe(report) }
-            .filter { isSafe -> isSafe }
-            .count()
+        return reports().filter { isSafe(it) }.count()
     }
 
     override fun part2(): Int {
-        return 0
+        val (safe, unsafe) = reports().partition { isSafe(it) }
+
+        val safeWhenDampened = unsafe.filter { isSafeWhenDampened(it) }
+
+        return safe.count() + safeWhenDampened.count()
     }
 
     private fun isSafe(report: Report): Boolean {
@@ -35,6 +36,17 @@ class Puzzle2 : Puzzle {
         }
 
         return true
+    }
+
+    private fun isSafeWhenDampened(report: Report): Boolean {
+        for (i in 0..report.lastIndex) {
+            val subset = report.filterIndexed { index, _ -> index != i }
+            if (isSafe(subset)) {
+                return true
+            }
+        }
+
+        return false
     }
 
     private fun reports(): List<Report> {
