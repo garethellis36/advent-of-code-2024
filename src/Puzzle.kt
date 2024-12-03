@@ -15,6 +15,6 @@ interface Puzzle {
             inputFile += "_sample"
         }
 
-        return File("./input/${inputFile}").readText()
+        return File("./input/${inputFile}").readText().trim('\n')
     }
 }

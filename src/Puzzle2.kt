@@ -53,7 +53,7 @@ class Puzzle2 : Puzzle {
     }
 
     private fun reports(): List<Report> {
-        val lines = input().split("\n").filter { it.isNotBlank() }
+        val lines = input().split("\n")
 
         return lines.map { report ->
             report.split(" ").map { level -> level.toInt() }

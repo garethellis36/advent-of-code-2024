@@ -6,7 +6,7 @@ class Puzzle1 : Puzzle {
     }
 
     private fun lists(): Pair<List<Int>, List<Int>> {
-        val lines = input().split("\n").filter { it.isNotBlank() }
+        val lines = input().split("\n")
 
         var list1 : List<Int> = listOf()
         var list2 : List<Int> = listOf()
