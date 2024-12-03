@@ -9,12 +9,16 @@ interface Puzzle {
         return false
     }
 
-    fun input(): String {
+    fun inputFile(): String {
         var inputFile = "puzzle${puzzleNumber()}"
         if (useSampleInput()) {
             inputFile += "_sample"
         }
 
-        return File("./input/${inputFile}").readText().trim('\n')
+        return inputFile
+    }
+
+    fun input(): String {
+        return File("./input/${inputFile()}").readText().trim('\n')
     }
 }
