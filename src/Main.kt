@@ -23,7 +23,7 @@ fun runPuzzle(puzzleNumber: Int) {
     val puzzle = Class.forName("Puzzle$puzzleNumber").getDeclaredConstructor().newInstance() as Puzzle
 
     println("\n*** ADVENT OF CODE 2024 ***")
-    println("***Day #$puzzleNumber ***\n")
+    println("*** Day #$puzzleNumber ***\n")
     println("Part 1 solution: ${puzzle.part1()}")
     println("Part 2 solution: ${puzzle.part2()}")
 }
