@@ -1,6 +1,6 @@
 import kotlin.math.absoluteValue
 
-class Puzzle1 : Puzzle() {
+class Puzzle1 : Puzzle {
     override fun puzzleNumber(): Int {
         return 1
     }

@@ -1,18 +1,26 @@
 fun main(args: Array<String>) {
     val puzzleNumber = getPuzzleNumber(args)
 
-    val puzzleFactories = mapOf(
-        1 to { Puzzle1() },
-        2 to { Puzzle2() },
-    )
+    when {
+        puzzleExists(puzzleNumber) -> {
+            runPuzzle(puzzleNumber)
+        }
 
-    val puzzleFactory = puzzleFactories[puzzleNumber]
-    if (puzzleFactory == null) {
-        println("No puzzle class found [$puzzleNumber]")
-        return
+        else -> println("No puzzle class found [$puzzleNumber]")
     }
+}
 
-    val puzzle = puzzleFactory()
+fun puzzleExists(puzzleNumber: Int): Boolean {
+    return try {
+        Class.forName("Puzzle$puzzleNumber")
+        true
+    } catch (e: ClassNotFoundException) {
+        false
+    }
+}
+
+fun runPuzzle(puzzleNumber: Int) {
+    val puzzle = Class.forName("Puzzle$puzzleNumber").getDeclaredConstructor().newInstance() as Puzzle
 
     println("\n*** ADVENT OF CODE 2024 ***")
     println("***Day #$puzzleNumber ***\n")

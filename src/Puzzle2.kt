@@ -3,7 +3,7 @@ import kotlin.math.absoluteValue
 typealias Level = Int
 typealias Report = List<Level>
 
-class Puzzle2 : Puzzle() {
+class Puzzle2 : Puzzle {
     override fun puzzleNumber(): Int {
         return 2
     }

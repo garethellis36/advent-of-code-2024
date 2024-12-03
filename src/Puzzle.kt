@@ -1,12 +1,19 @@
 import java.io.File
 
-abstract class Puzzle() {
-    abstract fun puzzleNumber(): Int
-    abstract fun part1(): Any
-    abstract fun part2(): Any
+interface Puzzle {
+    fun puzzleNumber(): Int
+    fun part1(): Any
+    fun part2(): Any
+
+    fun useSampleInput(): Boolean {
+        return false
+    }
 
     fun input(): String {
-        val inputFile = "puzzle${puzzleNumber()}"
+        var inputFile = "puzzle${puzzleNumber()}"
+        if (useSampleInput()) {
+            inputFile += "_sample"
+        }
 
         return File("./input/${inputFile}").readText()
     }
