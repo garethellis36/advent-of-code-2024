@@ -5,11 +5,31 @@ class Puzzle1 : Puzzle {
         return 1
     }
 
+    override fun part1(): Int {
+        val (list1, list2) = lists()
+
+        val sortedList1 = list1.sorted()
+        val sortedList2 = list2.sorted()
+
+        return sortedList1.foldIndexed(0) { i, totalDiff, n ->
+            totalDiff + (n - sortedList2[i]).absoluteValue
+        }
+    }
+
+    override fun part2(): Int {
+        val (list1, list2) = lists()
+
+        return list1.foldIndexed(0) { i, similarityScore, n ->
+            val countInList2 = list2.filter { it == n }.count()
+            similarityScore + n * countInList2
+        }
+    }
+
     private fun lists(): Pair<List<Int>, List<Int>> {
         val lines = input().split("\n")
 
-        var list1 : List<Int> = listOf()
-        var list2 : List<Int> = listOf()
+        val list1: MutableList<Int> = mutableListOf()
+        val list2: MutableList<Int> = mutableListOf()
         lines.forEach {
             val nums = it.split("   ")
 
@@ -17,32 +37,6 @@ class Puzzle1 : Puzzle {
             list2 += nums[1].toInt()
         }
 
-        return Pair(list1, list2)
-    }
-
-    override fun part1() : Int {
-        val (list1, list2) = lists()
-
-        val sortedList1 = list1.sorted()
-        val sortedList2 = list2.sorted()
-
-        var totalDiff = 0
-        for (i in 0.. sortedList1.lastIndex) {
-            totalDiff += (sortedList1[i] - sortedList2[i]).absoluteValue
-        }
-
-        return totalDiff
-    }
-
-    override fun part2() : Int {
-        val (list1, list2) = lists()
-
-        var similarityScore = 0
-        list1.forEach { it1 ->
-            val countInList2 = list2.filter { it2 -> it2 == it1 }.size
-            similarityScore += it1 * countInList2
-        }
-
-        return similarityScore
+        return Pair(list1.toList(), list2.toList())
     }
 }
