@@ -2,25 +2,22 @@ package org.garethellis.adventofcode.twentyfour
 
 import java.io.File
 
-interface Puzzle {
-    fun puzzleNumber(): Int
-    fun part1(): Any
-    fun part2(): Any
+abstract class Puzzle(private val useSampleInput: Boolean) {
 
-    fun useSampleInput(): Boolean {
-        return false
-    }
+    abstract fun puzzleNumber(): Int
+    abstract fun part1(): Any
+    abstract fun part2(): Any
 
-    fun inputFile(): String {
+    protected fun inputFile(): String {
         var inputFile = "puzzle${puzzleNumber()}"
-        if (useSampleInput()) {
+        if (useSampleInput) {
             inputFile += "_sample"
         }
 
         return inputFile
     }
 
-    fun input(): String {
+    protected fun input(): String {
         return File("./input/${inputFile()}").readText().trim('\n')
     }
 }

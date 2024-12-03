@@ -1,11 +1,15 @@
 package org.garethellis.adventofcode.twentyfour
 
-import com.github.ajalt.clikt.core.*
+import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.ajalt.clikt.parameters.options.flag
+import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
 
 class Cli : CliktCommand() {
     val puzzleNumber: Int by argument(help = "The puzzle (day) number of the puzzle").int()
+
+    val useSample: Boolean by option(help = "Use the sample puzzle input instead of the real input").flag(default = false)
 
     override fun run() {
         when {
@@ -27,9 +31,10 @@ class Cli : CliktCommand() {
     }
 
     private fun runPuzzle(puzzleNumber: Int) {
-        val puzzle = Class.forName("org.garethellis.adventofcode.twentyfour.Puzzle$puzzleNumber")
-            .getDeclaredConstructor()
-            .newInstance() as Puzzle
+        val puzzle =
+            Class.forName("org.garethellis.adventofcode.twentyfour.Puzzle$puzzleNumber")
+                .getDeclaredConstructor(Boolean::class.java)
+                .newInstance(useSample) as Puzzle
 
         echo("\n*** ADVENT OF CODE 2024 ***")
         echo("*** Day #$puzzleNumber ***\n")

@@ -1,6 +1,6 @@
 package org.garethellis.adventofcode.twentyfour
 
-class Puzzle3 : Puzzle {
+class Puzzle3(useSampleInput: Boolean) : Puzzle(useSampleInput) {
     override fun puzzleNumber(): Int {
         return 3
     }

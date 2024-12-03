@@ -2,7 +2,7 @@ package org.garethellis.adventofcode.twentyfour
 
 import kotlin.math.absoluteValue
 
-class Puzzle1 : Puzzle {
+class Puzzle1(useSampleInput: Boolean) : Puzzle(useSampleInput) {
     override fun puzzleNumber(): Int {
         return 1
     }
