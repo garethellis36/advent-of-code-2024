@@ -17,9 +17,8 @@ class Puzzle1(inputFile: String) : Puzzle(inputFile) {
     override fun part2(): Int {
         val (list1, list2) = lists()
 
-        return list1.foldIndexed(0) { i, similarityScore, n ->
-            val countInList2 = list2.count { it == n }
-            similarityScore + n * countInList2
+        return list1.fold(0) { similarityScore, n ->
+            similarityScore + n * list2.count { it == n }
         }
     }
 
