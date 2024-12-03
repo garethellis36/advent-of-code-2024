@@ -1,3 +1,5 @@
+package org.garethellis.adventofcode.twentyfour
+
 fun main(args: Array<String>) {
     val puzzleNumber = getPuzzleNumber(args)
 
@@ -12,7 +14,7 @@ fun main(args: Array<String>) {
 
 fun puzzleExists(puzzleNumber: Int): Boolean {
     return try {
-        Class.forName("Puzzle$puzzleNumber")
+        Class.forName("org.garethellis.adventofcode.twentyfour.Puzzle$puzzleNumber")
         true
     } catch (e: ClassNotFoundException) {
         false
@@ -20,7 +22,8 @@ fun puzzleExists(puzzleNumber: Int): Boolean {
 }
 
 fun runPuzzle(puzzleNumber: Int) {
-    val puzzle = Class.forName("Puzzle$puzzleNumber").getDeclaredConstructor().newInstance() as Puzzle
+    val puzzle = Class.forName("org.garethellis.adventofcode.twentyfour.Puzzle$puzzleNumber").getDeclaredConstructor()
+        .newInstance() as Puzzle
 
     println("\n*** ADVENT OF CODE 2024 ***")
     println("*** Day #$puzzleNumber ***\n")

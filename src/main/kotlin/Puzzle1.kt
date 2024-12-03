@@ -1,3 +1,5 @@
+package org.garethellis.adventofcode.twentyfour
+
 import kotlin.math.absoluteValue
 
 class Puzzle1 : Puzzle {

@@ -1,3 +1,5 @@
+package org.garethellis.adventofcode.twentyfour
+
 class Puzzle3 : Puzzle {
     override fun puzzleNumber(): Int {
         return 3

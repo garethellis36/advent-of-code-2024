@@ -1,3 +1,5 @@
+package org.garethellis.adventofcode.twentyfour
+
 import java.io.File
 
 interface Puzzle {
