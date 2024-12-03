@@ -1,11 +1,12 @@
-import java.io.File
 import kotlin.math.absoluteValue
 
-class Puzzle1 : Puzzle {
-    private fun lists(): Pair<List<Int>, List<Int>> {
-        val input = File("./input/puzzle1").readText()
+class Puzzle1 : Puzzle() {
+    override fun puzzleNumber(): Int {
+        return 1
+    }
 
-        val lines = input.split("\n").filter { it.isNotBlank() }
+    private fun lists(): Pair<List<Int>, List<Int>> {
+        val lines = input().split("\n").filter { it.isNotBlank() }
 
         var list1 : List<Int> = listOf()
         var list2 : List<Int> = listOf()

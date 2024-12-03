@@ -1,10 +1,13 @@
-import java.io.File
 import kotlin.math.absoluteValue
 
 typealias Level = Int
 typealias Report = List<Level>
 
-class Puzzle2 : Puzzle {
+class Puzzle2 : Puzzle() {
+    override fun puzzleNumber(): Int {
+        return 2
+    }
+
     override fun part1(): Int {
         return reports().filter { isSafe(it) }.count()
     }
@@ -50,8 +53,7 @@ class Puzzle2 : Puzzle {
     }
 
     private fun reports(): List<Report> {
-        val input = File("./input/puzzle2").readText()
-        val lines = input.split("\n").filter { it.isNotBlank() }
+        val lines = input().split("\n").filter { it.isNotBlank() }
 
         return lines.map { report ->
             report.split(" ").map { level -> level.toInt() }
