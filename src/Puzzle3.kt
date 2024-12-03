@@ -6,11 +6,10 @@ class Puzzle3 : Puzzle {
     override fun part1(): Any {
         return Regex("""mul\(([0-9]+,[0-9]+)\)""")
             .findAll(input())
-            .map { m ->
+            .fold(0) { sum, m ->
                 val (a, b) = m.groupValues[1].split(",")
-                a.toInt() * b.toInt()
+                sum + (a.toInt() * b.toInt())
             }
-            .sum()
     }
 
     override fun part2(): Any {
@@ -25,11 +24,6 @@ class Puzzle3 : Puzzle {
         var enabled = true
 
         return matches
-            /**
-             * Sequence#filter() is evaluated lazily, so we either have to convert it to a List now or at the end
-             * @see [https://kotlinlang.org/docs/sequences.html#sequence]
-             */
-            .toList()
             .filter {
                 when {
                     it.groupValues[0] == "do()" -> {
@@ -51,10 +45,9 @@ class Puzzle3 : Puzzle {
             /**
              * We should now be left with a list of matches for the "mul()" tokens, which can be processed similarly to the part 1 solution
              */
-            .map {
-                val (a, b) = it.groupValues[4].split(",")
-                a.toInt() * b.toInt()
+            .fold(0) { sum, m ->
+                val (a, b) = m.groupValues[4].split(",")
+                sum + a.toInt() * b.toInt()
             }
-            .sum()
     }
 }
