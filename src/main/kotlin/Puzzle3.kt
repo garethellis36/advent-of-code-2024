@@ -1,10 +1,6 @@
 package org.garethellis.adventofcode.twentyfour
 
-class Puzzle3(useSampleInput: Boolean) : Puzzle(useSampleInput) {
-    override fun puzzleNumber(): Int {
-        return 3
-    }
-
+class Puzzle3(inputFile: String) : Puzzle(inputFile) {
     override fun part1(): Any {
         return Regex("""mul\(([0-9]+,[0-9]+)\)""")
             .findAll(input())

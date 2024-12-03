@@ -31,14 +31,28 @@ class Cli : CliktCommand() {
     }
 
     private fun runPuzzle(puzzleNumber: Int) {
-        val puzzle =
+
+        var inputFile = "./input/puzzle$puzzleNumber"
+        if (useSample) {
+            inputFile += "_sample"
+        }
+
+        val createPuzzle = {
             Class.forName("org.garethellis.adventofcode.twentyfour.Puzzle$puzzleNumber")
-                .getDeclaredConstructor(Boolean::class.java)
-                .newInstance(useSample) as Puzzle
+                .getDeclaredConstructor(String::class.java)
+                .newInstance(inputFile) as Puzzle
+        }
 
         echo("\n*** ADVENT OF CODE 2024 ***")
         echo("*** Day #$puzzleNumber ***\n")
-        echo("Part 1 solution: ${puzzle.part1()}")
-        echo("Part 2 solution: ${puzzle.part2()}")
+
+        echo("Part 1 solution: ${createPuzzle().part1()}")
+
+        // day 3 has different sample input for part 2
+        if (puzzleNumber == 3 && useSample) {
+            inputFile = "./input/puzzle3_part2_sample"
+        }
+
+        echo("Part 2 solution: ${createPuzzle().part2()}")
     }
 }
