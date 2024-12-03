@@ -18,7 +18,7 @@ class Puzzle1(inputFile: String) : Puzzle(inputFile) {
         val (list1, list2) = lists()
 
         return list1.foldIndexed(0) { i, similarityScore, n ->
-            val countInList2 = list2.filter { it == n }.count()
+            val countInList2 = list2.count { it == n }
             similarityScore + n * countInList2
         }
     }
@@ -29,10 +29,10 @@ class Puzzle1(inputFile: String) : Puzzle(inputFile) {
         val list1: MutableList<Int> = mutableListOf()
         val list2: MutableList<Int> = mutableListOf()
         lines.forEach {
-            val nums = it.split("   ")
+            val (a, b) = it.split("   ")
 
-            list1 += nums[0].toInt()
-            list2 += nums[1].toInt()
+            list1 += a.toInt()
+            list2 += b.toInt()
         }
 
         return Pair(list1.toList(), list2.toList())

@@ -41,7 +41,7 @@ class Puzzle3(inputFile: String) : Puzzle(inputFile) {
                 }
             }
             /**
-             * We should now be left with a list of matches for the "mul()" tokens, which can be processed similarly to the part 1 solution
+             * We should now be left with a list of matches for the enabled "mul()" tokens, which can be processed similarly to the part 1 solution
              */
             .fold(0) { sum, m ->
                 val (a, b) = m.groupValues[4].split(",")

@@ -7,15 +7,13 @@ typealias Report = List<Level>
 
 class Puzzle2(inputFile: String) : Puzzle(inputFile) {
     override fun part1(): Int {
-        return reports().filter { isSafe(it) }.count()
+        return reports().count(::isSafe)
     }
 
     override fun part2(): Int {
-        val (safe, unsafe) = reports().partition { isSafe(it) }
+        val (safe, unsafe) = reports().partition(::isSafe)
 
-        val safeWhenDampened = unsafe.filter { isSafeWhenDampened(it) }
-
-        return safe.count() + safeWhenDampened.count()
+        return safe.count() + unsafe.count(::isSafeWhenDampened)
     }
 
     private fun isSafe(report: Report): Boolean {
@@ -30,8 +28,8 @@ class Puzzle2(inputFile: String) : Puzzle(inputFile) {
                 return false
             }
 
-            val diff = report[i] - report[i + 1]
-            if (diff.absoluteValue < 1 || diff.absoluteValue > 3) {
+            val diff = (report[i] - report[i + 1]).absoluteValue
+            if (diff < 1 || diff > 3) {
                 return false
             }
         }
@@ -51,10 +49,10 @@ class Puzzle2(inputFile: String) : Puzzle(inputFile) {
     }
 
     private fun reports(): List<Report> {
-        val lines = input().split("\n")
-
-        return lines.map { report ->
-            report.split(" ").map { level -> level.toInt() }
-        }
+        return input()
+            .split("\n")
+            .map { report ->
+                report.split(" ").map { level -> level.toInt() }
+            }
     }
 }
