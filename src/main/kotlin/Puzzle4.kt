@@ -37,12 +37,12 @@ class Grid(private val rows: List<GridRow>) {
             /**
              * An 'A' can only have an 'M' or an 'S' in the ordinal directions
              */
-            val ordinalNeighbours = listOf(
-                letterAt(move(aPosition, GridDirection.UP_LEFT)),
-                letterAt(move(aPosition, GridDirection.DOWN_RIGHT)),
-                letterAt(move(aPosition, GridDirection.DOWN_LEFT)),
-                letterAt(move(aPosition, GridDirection.UP_RIGHT))
-            ).filter { it == 'M' || it == 'S' }
+            val ordinalNeighbours = mapOf(
+                GridDirection.UP_LEFT to letterAt(move(aPosition, GridDirection.UP_LEFT)),
+                GridDirection.DOWN_RIGHT to letterAt(move(aPosition, GridDirection.DOWN_RIGHT)),
+                GridDirection.DOWN_LEFT to letterAt(move(aPosition, GridDirection.DOWN_LEFT)),
+                GridDirection.UP_RIGHT to letterAt(move(aPosition, GridDirection.UP_RIGHT))
+            ).filter { (_, letter) -> letter == 'M' || letter == 'S' }
 
             /**
              * If we don't have 4 ordinal neighbours left, it definitely can't be an X-MAS
@@ -50,9 +50,12 @@ class Grid(private val rows: List<GridRow>) {
             if (ordinalNeighbours.count() < 4) return@fold total
 
             /**
-             * To form an X-MAS, top-left and bottom-right must be different letters, the same is true for bottom-left and top-right
+             * To form an X-MAS, the diagonally opposite neighbours must have different values
              */
-            total + (if (ordinalNeighbours[0] != ordinalNeighbours[1] && ordinalNeighbours[2] != ordinalNeighbours[3]) 1 else 0)
+            if (ordinalNeighbours[GridDirection.UP_LEFT] == ordinalNeighbours[GridDirection.DOWN_RIGHT]) return@fold total
+            if (ordinalNeighbours[GridDirection.DOWN_LEFT] == ordinalNeighbours[GridDirection.UP_RIGHT]) return@fold total
+
+            total + 1
         }
     }
 
