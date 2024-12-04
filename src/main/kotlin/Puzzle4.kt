@@ -10,7 +10,7 @@ class Puzzle4(inputFile: String) : Puzzle(inputFile) {
     }
 
     override fun part2(): Any {
-        return 0
+        return compileGrid().findXmasCrosses()
     }
 
     private fun compileGrid(): Grid {
@@ -20,7 +20,7 @@ class Puzzle4(inputFile: String) : Puzzle(inputFile) {
 
 class Grid(private val rows: List<GridRow>) {
     fun findXmas(): Int {
-        return findX().fold(0) { total, xPosition ->
+        return findAll('X').fold(0) { total, xPosition ->
             total + ((if (xmasStartsFrom(xPosition, GridDirection.UP_LEFT)) 1 else 0)
                     + (if (xmasStartsFrom(xPosition, GridDirection.UP)) 1 else 0)
                     + (if (xmasStartsFrom(xPosition, GridDirection.UP_RIGHT)) 1 else 0)
@@ -32,11 +32,35 @@ class Grid(private val rows: List<GridRow>) {
         }
     }
 
-    private fun findX(): Set<GridCoordinate> {
+    fun findXmasCrosses(): Int {
+        return findAll('A').fold(0) { total, aPosition ->
+            /**
+             * An 'A' can only have an 'M' or an 'S' in the ordinal directions
+             */
+            val ordinalNeighbours = listOf(
+                letterAt(move(aPosition, GridDirection.UP_LEFT)),
+                letterAt(move(aPosition, GridDirection.DOWN_RIGHT)),
+                letterAt(move(aPosition, GridDirection.DOWN_LEFT)),
+                letterAt(move(aPosition, GridDirection.UP_RIGHT))
+            ).filter { it == 'M' || it == 'S' }
+
+            /**
+             * If we don't have 4 ordinal neighbours left, it definitely can't be an X-MAS
+             */
+            if (ordinalNeighbours.count() < 4) return@fold total
+
+            /**
+             * To form an X-MAS, top-left and bottom-right must be different letters, the same is true for bottom-left and top-right
+             */
+            total + (if (ordinalNeighbours[0] != ordinalNeighbours[1] && ordinalNeighbours[2] != ordinalNeighbours[3]) 1 else 0)
+        }
+    }
+
+    private fun findAll(letter: Char): Set<GridCoordinate> {
         var coords = setOf<GridCoordinate>()
         rows.forEachIndexed() { r, cells ->
             cells.forEachIndexed() { c, cell ->
-                if (cell == 'X') {
+                if (cell == letter) {
                     coords += GridCoordinate(r, c)
                 }
             }
