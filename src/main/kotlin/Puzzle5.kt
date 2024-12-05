@@ -4,16 +4,15 @@ typealias PageNumber = Int
 typealias PageOrderingRule = Pair<PageNumber, PageNumber>
 
 class Puzzle5(inputFile: String) : Puzzle(inputFile) {
-    override fun part1(): Any {
-        return updates()
-            .filter(Update::isInCorrectOrder)
-            .map(Update::middlePage)
-            .sum()
-    }
+    override fun part1(): Int = updates()
+        .filter(Update::isInCorrectOrder)
+        .map(Update::middlePage)
+        .sum()
 
-    override fun part2(): Any {
-        return 0
-    }
+    override fun part2(): Int = updates()
+        .filter(Update::isNotInCorrectOrder)
+        .map { it.sort().middlePage() }
+        .sum()
 
     private fun updates(): List<Update> {
         val (a, b) = input().split("\n\n")
@@ -54,7 +53,14 @@ class Update(private val pageOrderingRules: List<PageOrderingRule>, private val 
         return true
     }
 
-    fun middlePage(): Int {
-        return this.pageNumbers[this.pageNumbers.lastIndex / 2]
+    fun isNotInCorrectOrder(): Boolean = !isInCorrectOrder()
+
+    fun middlePage(): Int = this.pageNumbers[this.pageNumbers.lastIndex / 2]
+
+    fun sort(): Update {
+        val sortedPageNumbers = pageNumbers
+            .sortedWith { p1, p2 -> p1.compareTo(p2) }
+
+        return Update(pageOrderingRules, sortedPageNumbers)
     }
 }
