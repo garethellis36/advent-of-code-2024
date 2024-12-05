@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="5" type="JetRunConfigurationType">
+    <option name="MAIN_CLASS_NAME" value="org.garethellis.adventofcode.twentyfour.MainKt" />
+    <module name="untitled.main" />
+    <option name="PROGRAM_PARAMETERS" value="5" />
+    <shortenClasspath name="NONE" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
