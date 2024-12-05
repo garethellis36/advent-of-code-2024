@@ -1,7 +1,7 @@
 package org.garethellis.adventofcode.twentyfour
 
 typealias PageNumber = Int
-typealias PageOrderingRule = Pair<PageNumber, PageNumber>
+typealias PageOrderingRules = Map<Int, Set<Int>>
 
 class Puzzle5(inputFile: String) : Puzzle(inputFile) {
     override val part1ExampleSolution: Int = 143
@@ -18,61 +18,38 @@ class Puzzle5(inputFile: String) : Puzzle(inputFile) {
     private fun updates(): List<Update> {
         val (a, b) = input().split("\n\n")
 
-        val pageOrderingRules = a
-            .split('\n')
-            .map {
-                val (p1, p2) = it.split("|").map(String::toInt)
-                Pair(p1, p2)
-            }
+        val pageOrderingRules = mutableMapOf<Int, Set<Int>>()
+        a.split('\n').forEach { rule ->
+            val (p1, p2) = rule.split("|").map(String::toInt)
+            pageOrderingRules[p1] = if (pageOrderingRules.containsKey(p1)) pageOrderingRules[p1]!! + p2 else setOf(p2)
+        }
 
-        return b
-            .split('\n')
-            .map { it.split(',').map(String::toInt) }
-            .map { Update(pageOrderingRules, it) }
+        return b.split('\n').map { it.split(',').map(String::toInt) }.map { Update(pageOrderingRules, it) }
     }
 }
 
-class Update(private val pageOrderingRules: List<PageOrderingRule>, private val pageNumbers: List<PageNumber>) {
+class Update(private val pageOrderingRules: PageOrderingRules, private val pageNumbers: List<PageNumber>) {
+    fun sort(): Update = Update(
+        pageOrderingRules,
+        pageNumbers.sortedWith { p1, p2 -> if (pageOrderingRules[p1]?.contains(p2) == true) 1 else -1 }
+    )
+
     fun isInCorrectOrder(): Boolean {
-        /**
-         * We need to see if any of the ordering rules are not followed by the actual sequence of page numbers
-         */
-        pageOrderingRules.forEach { rule ->
-            val (a, b) = rule
+        pageOrderingRules.forEach { (a, numbersThatMustFollowIt) ->
+            val aPosition = pageNumbers.indexOf(a)
+            if (aPosition == -1) return@forEach
 
-            val aPos = pageNumbers.indexOf(a)
-            val bPos = pageNumbers.indexOf(b)
-
-            // If either page numbers in this rule do not appear in the list of page numbers, this is fine
-            if (aPos == -1 || bPos == -1) return@forEach
-
-            // if the first number in the ordering rule appears in the list after the second, this is not fine
-            if (aPos > bPos) return false
+            numbersThatMustFollowIt.forEach inner@{ b ->
+                val bPosition = pageNumbers.indexOf(b)
+                if (bPosition == -1) return@inner
+                if (aPosition > bPosition) return false
+            }
         }
 
-        // all page ordering rules followed
         return true
     }
 
     fun isNotInCorrectOrder(): Boolean = !isInCorrectOrder()
 
     fun middlePage(): Int = this.pageNumbers[this.pageNumbers.lastIndex / 2]
-
-    fun sort(): Update {
-        val rules = rulesAsMappedSets()
-
-        return Update(
-            pageOrderingRules,
-            pageNumbers.sortedWith { p1, p2 -> if (rules[p1]?.contains(p2) == true) 1 else -1 }
-        )
-    }
-
-    private fun rulesAsMappedSets(): Map<Int, Set<Int>> {
-        val map = mutableMapOf<Int, Set<Int>>()
-        pageOrderingRules.forEach { rule ->
-            val (a, b) = rule
-            map[a] = if (map.containsKey(a)) map[a]!! + b else setOf(b)
-        }
-        return map
-    }
 }
