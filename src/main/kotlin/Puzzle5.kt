@@ -9,13 +9,11 @@ class Puzzle5(inputFile: String) : Puzzle(inputFile) {
 
     override fun part1(): Int = updates()
         .filter(Update::isInCorrectOrder)
-        .map(Update::middlePage)
-        .sum()
+        .fold(0) { total, update -> total + update.middlePage() }
 
     override fun part2(): Int = updates()
         .filter(Update::isNotInCorrectOrder)
-        .map { it.sort().middlePage() }
-        .sum()
+        .fold(0) { total, update -> total + update.sort().middlePage() }
 
     private fun updates(): List<Update> {
         val (a, b) = input().split("\n\n")
@@ -61,9 +59,20 @@ class Update(private val pageOrderingRules: List<PageOrderingRule>, private val 
     fun middlePage(): Int = this.pageNumbers[this.pageNumbers.lastIndex / 2]
 
     fun sort(): Update {
-        val sortedPageNumbers = pageNumbers
-            .sortedWith { p1, p2 -> p1.compareTo(p2) }
+        val rules = rulesAsMappedSets()
 
-        return Update(pageOrderingRules, sortedPageNumbers)
+        return Update(
+            pageOrderingRules,
+            pageNumbers.sortedWith { p1, p2 -> if (rules[p1]?.contains(p2) == true) 1 else -1 }
+        )
+    }
+
+    private fun rulesAsMappedSets(): Map<Int, Set<Int>> {
+        val map = mutableMapOf<Int, Set<Int>>()
+        pageOrderingRules.forEach { rule ->
+            val (a, b) = rule
+            map[a] = if (map.containsKey(a)) map[a]!! + b else setOf(b)
+        }
+        return map
     }
 }
