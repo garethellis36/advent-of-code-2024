@@ -3,6 +3,9 @@ package org.garethellis.adventofcode.twentyfour
 import kotlin.math.absoluteValue
 
 class Puzzle1(inputFile: String) : Puzzle(inputFile) {
+    override val part1ExampleSolution: Int = 11
+    override val part2ExampleSolution: Int = 31
+
     override fun part1(): Int {
         val (list1, list2) = lists()
 

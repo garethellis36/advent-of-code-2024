@@ -4,6 +4,9 @@ typealias PageNumber = Int
 typealias PageOrderingRule = Pair<PageNumber, PageNumber>
 
 class Puzzle5(inputFile: String) : Puzzle(inputFile) {
+    override val part1ExampleSolution: Int = 143
+    override val part2ExampleSolution: Int = 123
+
     override fun part1(): Int = updates()
         .filter(Update::isInCorrectOrder)
         .map(Update::middlePage)

@@ -6,6 +6,9 @@ typealias Level = Int
 typealias Report = List<Level>
 
 class Puzzle2(inputFile: String) : Puzzle(inputFile) {
+    override val part1ExampleSolution: Int = 2
+    override val part2ExampleSolution: Int = 4
+
     override fun part1(): Int {
         return reports().count(::isSafe)
     }
