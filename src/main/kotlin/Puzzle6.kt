@@ -4,32 +4,35 @@ class Puzzle6(inputFile: String) : Puzzle(inputFile) {
     override val part1ExampleSolution: Int = 41
     override val part2ExampleSolution: Int = 6
 
-    override fun part1(): Any {
-        return positionsOfSafePath().count()
-    }
+    override fun part1(): Int = positionsOfSafePath().count()
 
     override fun part2(): Any {
-        val (guard, ogLab) = initLab()
+        val (ogGuard, ogLab) = initLab()
 
-        val possibleLabs = positionsOfSafePath().mapIndexed { i, pos -> if (i == 0) ogLab else ogLab.addObstacle(pos) }
+        return positionsOfSafePath()
+            // go through each position the guard visits on a standard path and add an obstacle
+            .mapIndexed { i, pos ->
+                // we ignore the guard's initial position
+                if (i == 0) ogLab
+                else ogLab.addObstacle(pos)
+            }
+            .fold(0) { total, lab ->
+                var guard = ogGuard
+                val positions = mutableSetOf<Pair<LabPosition, GuardOrientation>>()
 
-        return possibleLabs.fold(0) { total, labWithExtraObstacle ->
-            var g = guard
-            val positions = mutableSetOf<Pair<LabPosition, GuardOrientation>>()
+                while (!guard.hasExitedLab()) {
+                    // guard has already visited this position and in this orientation, so is looping
+                    if (positions.contains(Pair(guard.position, guard.orientation))) {
+                        return@fold total + 1
+                    }
 
-            while (!g.hasExitedLab()) {
-                // guard has already visited this position and in this orientation, and is looping
-                if (positions.contains(Pair(g.position, g.orientation))) {
-                    return@fold total + 1
+                    positions.add(Pair(guard.position, guard.orientation))
+                    guard = guard.patrol(lab)
                 }
 
-                positions.add(Pair(g.position, g.orientation))
-                g = g.patrol(labWithExtraObstacle)
+                // guard is still able to exit the lab, adding an obstacle in this position did not make her loop
+                total
             }
-
-            // guard is still able to exit the lab, adding an obstacle here did not make her loop
-            total
-        }
     }
 
     private fun positionsOfSafePath(): Set<LabPosition> {
@@ -69,15 +72,13 @@ class Puzzle6(inputFile: String) : Puzzle(inputFile) {
 class Laboratory(private val rows: List<List<LabPosition>>) {
     fun has(position: LabPosition): Boolean = rows.elementAtOrNull(position.row)?.elementAtOrNull(position.col) != null
 
-    fun addObstacle(position: LabPosition): Laboratory {
-        return Laboratory(rows.mapIndexed rowMapper@{ rowIndex, cols ->
-            if (rowIndex != position.row) return@rowMapper cols
-            cols.mapIndexed colMapper@{ colIndex, pos ->
-                if (colIndex != position.col) return@colMapper pos
-                LabPosition(pos.row, pos.col, true)
-            }
-        })
-    }
+    fun addObstacle(position: LabPosition): Laboratory = Laboratory(rows.mapIndexed rowMapper@{ rowIndex, cols ->
+        if (rowIndex != position.row) return@rowMapper cols
+        cols.mapIndexed colMapper@{ colIndex, pos ->
+            if (colIndex != position.col) return@colMapper pos
+            LabPosition(pos.row, pos.col, true)
+        }
+    })
 
     fun moveFrom(position: LabPosition, direction: GuardOrientation): LabPosition {
         val (nextRow, nextCol) = when (direction) {
@@ -109,7 +110,7 @@ enum class GuardOrientation {
 }
 
 class LabPosition(val row: Int, val col: Int, val hasObstacle: Boolean) {
-    fun isInLab(): Boolean = row == -1 && col == -1
+    fun isInLab(): Boolean = row != -1 && col != -1
 }
 
 class Guard(val position: LabPosition, val orientation: GuardOrientation) {
@@ -118,5 +119,5 @@ class Guard(val position: LabPosition, val orientation: GuardOrientation) {
         return if (next.hasObstacle) Guard(position, orientation.rotateRight()) else Guard(next, orientation)
     }
 
-    fun hasExitedLab(): Boolean = position.isInLab()
+    fun hasExitedLab(): Boolean = !position.isInLab()
 }
