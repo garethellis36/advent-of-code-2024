@@ -7,15 +7,6 @@ interface Calculator {
 }
 
 enum class Operator : Calculator {
-    Plus, Multiply;
-
-    override fun calculate(a: Long, b: Long): Long = when (this) {
-        Plus -> a + b
-        Multiply -> a * b
-    }
-}
-
-enum class ExtendedOperator : Calculator {
     Plus, Multiply, Concatenate;
 
     override fun calculate(a: Long, b: Long): Long = when (this) {
@@ -26,8 +17,8 @@ enum class ExtendedOperator : Calculator {
 }
 
 class Puzzle7(input: String) : Puzzle(input) {
-    override fun part1(): Long = solveWith(Operator.entries)
-    override fun part2(): Long = solveWith(ExtendedOperator.entries)
+    override fun part1(): Long = solveWith(listOf(Operator.Plus, Operator.Multiply))
+    override fun part2(): Long = solveWith(Operator.entries)
 
     private fun solveWith(calculators: List<Calculator>): Long = equations().fold(0) { total, eq ->
         val (expectedAnswer, _) = eq
