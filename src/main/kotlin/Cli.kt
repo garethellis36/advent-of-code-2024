@@ -5,6 +5,7 @@ import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.mordant.rendering.TextColors.brightGreen
 import com.github.ajalt.mordant.rendering.TextColors.brightRed
+import java.io.File
 
 class Cli : CliktCommand() {
     val puzzleNumber: Int by argument(help = "The puzzle (day) number of the puzzle").int()
@@ -35,9 +36,11 @@ class Cli : CliktCommand() {
         val part2ExampleInputFile = if (puzzleNumber == 3) "./input/puzzle3_part2_example" else part1ExampleInputFile
 
         val createPuzzle = { inputFile: String ->
+            val input = File(inputFile).readText().trim('\n')
+
             Class.forName("org.garethellis.adventofcode.twentyfour.Puzzle$puzzleNumber")
                 .getDeclaredConstructor(String::class.java)
-                .newInstance(inputFile) as Puzzle
+                .newInstance(input) as Puzzle
         }
 
         echo("\n*** ADVENT OF CODE 2024 ***")

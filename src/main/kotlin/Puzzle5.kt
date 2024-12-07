@@ -3,7 +3,7 @@ package org.garethellis.adventofcode.twentyfour
 typealias PageNumber = Int
 typealias PageOrderingRules = Map<Int, Set<Int>>
 
-class Puzzle5(inputFile: String) : Puzzle(inputFile) {
+class Puzzle5(input: String) : Puzzle(input) {
     override val part1ExampleSolution: Int = 143
     override val part2ExampleSolution: Int = 123
 

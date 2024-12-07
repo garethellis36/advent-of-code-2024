@@ -4,7 +4,7 @@ typealias GridCoordinate = Pair<Int, Int>
 typealias GridCell = Char
 typealias GridRow = List<GridCell>
 
-class Puzzle4(inputFile: String) : Puzzle(inputFile) {
+class Puzzle4(input: String) : Puzzle(input) {
     override val part1ExampleSolution: Int = 18
     override val part2ExampleSolution: Int = 9
 

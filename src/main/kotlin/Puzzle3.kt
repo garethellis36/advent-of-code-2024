@@ -1,6 +1,6 @@
 package org.garethellis.adventofcode.twentyfour
 
-class Puzzle3(inputFile: String) : Puzzle(inputFile) {
+class Puzzle3(input: String) : Puzzle(input) {
     override val part1ExampleSolution: Int = 161
     override val part2ExampleSolution: Int = 48
 

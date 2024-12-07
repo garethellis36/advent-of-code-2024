@@ -5,7 +5,7 @@ import kotlin.math.absoluteValue
 typealias Level = Int
 typealias Report = List<Level>
 
-class Puzzle2(inputFile: String) : Puzzle(inputFile) {
+class Puzzle2(input: String) : Puzzle(input) {
     override val part1ExampleSolution: Int = 2
     override val part2ExampleSolution: Int = 4
 
