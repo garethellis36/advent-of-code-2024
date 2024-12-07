@@ -1,17 +1,15 @@
 package org.garethellis.adventofcode.twentyfour
 
-import java.math.BigInteger
-
-typealias Equation = Pair<BigInteger, List<BigInteger>>
+typealias Equation = Pair<Long, List<Long>>
 
 interface Calculator {
-    fun calculate(i: BigInteger, i2: BigInteger): BigInteger
+    fun calculate(i: Long, i2: Long): Long
 }
 
 enum class Operator : Calculator {
     Plus, Multiply;
 
-    override fun calculate(i: BigInteger, i2: BigInteger): BigInteger = when (this) {
+    override fun calculate(i: Long, i2: Long): Long = when (this) {
         Plus -> i + i2
         Multiply -> i * i2
     }
@@ -20,18 +18,18 @@ enum class Operator : Calculator {
 enum class ExtendedOperator : Calculator {
     Plus, Multiply, Concatenate;
 
-    override fun calculate(i: BigInteger, i2: BigInteger): BigInteger = when (this) {
+    override fun calculate(i: Long, i2: Long): Long = when (this) {
         Plus -> i + i2
         Multiply -> i * i2
-        Concatenate -> (i.toString() + i2.toString()).toBigInteger()
+        Concatenate -> (i.toString() + i2.toString()).toLong()
     }
 }
 
 class Puzzle7(input: String) : Puzzle(input) {
-    override fun part1(): BigInteger = solveWith(Operator.entries)
-    override fun part2(): BigInteger = solveWith(ExtendedOperator.entries)
+    override fun part1(): Long = solveWith(Operator.entries)
+    override fun part2(): Long = solveWith(ExtendedOperator.entries)
 
-    private fun solveWith(calculators: List<Calculator>): BigInteger = equations().fold(BigInteger.ZERO) { total, eq ->
+    private fun solveWith(calculators: List<Calculator>): Long = equations().fold(0) { total, eq ->
         val (expectedAnswer, _) = eq
         if (canBeSolved(eq, calculators)) total + expectedAnswer
         else total
@@ -39,7 +37,7 @@ class Puzzle7(input: String) : Puzzle(input) {
 
     private fun canBeSolved(eq: Equation, operators: List<Calculator>): Boolean {
         val (expectedResult, inputs) = eq
-        val possibleAnswers = mutableListOf<MutableList<BigInteger>>()
+        val possibleAnswers = mutableListOf<MutableList<Long>>()
 
         inputs.forEachIndexed { i, value ->
             if (i == 0) {
@@ -47,7 +45,7 @@ class Puzzle7(input: String) : Puzzle(input) {
                 return@forEachIndexed
             }
 
-            val answers = mutableListOf<BigInteger>()
+            val answers = mutableListOf<Long>()
             operators.forEach { op ->
                 possibleAnswers[i - 1].forEach { answer -> answers.add(op.calculate(answer, value)) }
             }
@@ -59,9 +57,9 @@ class Puzzle7(input: String) : Puzzle(input) {
 
     private fun equations() = input().split('\n').map { line ->
         val (result, inputsString) = line.split(": ")
-        Pair(result.toBigInteger(), inputsString.split(' ').map(String::toBigInteger))
+        Pair(result.toLong(), inputsString.split(' ').map(String::toLong))
     }
 
-    override val part1ExampleSolution: BigInteger = BigInteger.valueOf(3749)
-    override val part2ExampleSolution: BigInteger = BigInteger.valueOf(11387)
+    override val part1ExampleSolution: Long = 3749
+    override val part2ExampleSolution: Long = 11387
 }
