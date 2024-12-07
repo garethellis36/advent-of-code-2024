@@ -3,25 +3,25 @@ package org.garethellis.adventofcode.twentyfour
 typealias Equation = Pair<Long, List<Long>>
 
 interface Calculator {
-    fun calculate(i: Long, i2: Long): Long
+    fun calculate(a: Long, b: Long): Long
 }
 
 enum class Operator : Calculator {
     Plus, Multiply;
 
-    override fun calculate(i: Long, i2: Long): Long = when (this) {
-        Plus -> i + i2
-        Multiply -> i * i2
+    override fun calculate(a: Long, b: Long): Long = when (this) {
+        Plus -> a + b
+        Multiply -> a * b
     }
 }
 
 enum class ExtendedOperator : Calculator {
     Plus, Multiply, Concatenate;
 
-    override fun calculate(i: Long, i2: Long): Long = when (this) {
-        Plus -> i + i2
-        Multiply -> i * i2
-        Concatenate -> (i.toString() + i2.toString()).toLong()
+    override fun calculate(a: Long, b: Long): Long = when (this) {
+        Plus -> a + b
+        Multiply -> a * b
+        Concatenate -> (a.toString() + b.toString()).toLong()
     }
 }
 
