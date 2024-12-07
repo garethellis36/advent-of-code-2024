@@ -47,7 +47,10 @@ class Puzzle7(input: String) : Puzzle(input) {
 
             val answers = mutableListOf<Long>()
             operators.forEach { op ->
-                possibleAnswers[i - 1].forEach { answer -> answers.add(op.calculate(answer, value)) }
+                possibleAnswers[i - 1].forEach { answer ->
+                    val result = op.calculate(answer, value)
+                    if (result <= expectedResult) answers.add(result)
+                }
             }
             possibleAnswers.add(answers)
         }
