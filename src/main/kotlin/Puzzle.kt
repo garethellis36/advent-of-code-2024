@@ -1,7 +1,5 @@
 package org.garethellis.adventofcode.twentyfour
 
-import java.io.File
-
 abstract class Puzzle(private val input: String) {
 
     abstract fun part1(): Any
