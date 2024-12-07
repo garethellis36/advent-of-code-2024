@@ -2,14 +2,10 @@ package org.garethellis.adventofcode.twentyfour
 
 typealias Equation = Pair<Long, List<Long>>
 
-interface Calculator {
-    fun calculate(a: Long, b: Long): Long
-}
-
-enum class Operator : Calculator {
+enum class Operator {
     Plus, Multiply, Concatenate;
 
-    override fun calculate(a: Long, b: Long): Long = when (this) {
+    fun calculate(a: Long, b: Long): Long = when (this) {
         Plus -> a + b
         Multiply -> a * b
         Concatenate -> (a.toString() + b.toString()).toLong()
@@ -20,13 +16,13 @@ class Puzzle7(input: String) : Puzzle(input) {
     override fun part1(): Long = solveWith(listOf(Operator.Plus, Operator.Multiply))
     override fun part2(): Long = solveWith(Operator.entries)
 
-    private fun solveWith(calculators: List<Calculator>): Long = equations().fold(0) { total, eq ->
+    private fun solveWith(calculators: List<Operator>): Long = equations().fold(0) { total, eq ->
         val (expectedAnswer, _) = eq
         if (canBeSolved(eq, calculators)) total + expectedAnswer
         else total
     }
 
-    private fun canBeSolved(eq: Equation, operators: List<Calculator>): Boolean {
+    private fun canBeSolved(eq: Equation, operators: List<Operator>): Boolean {
         val (expectedResult, inputs) = eq
         val possibleAnswers = mutableListOf<MutableList<Long>>()
 
@@ -37,9 +33,9 @@ class Puzzle7(input: String) : Puzzle(input) {
             }
 
             val answers = mutableListOf<Long>()
-            operators.forEach { op ->
+            operators.forEach { operator ->
                 possibleAnswers[i - 1].forEach { answer ->
-                    val result = op.calculate(answer, value)
+                    val result = operator.calculate(answer, value)
                     if (result <= expectedResult) answers.add(result)
                 }
             }
