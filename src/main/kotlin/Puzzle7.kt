@@ -24,15 +24,20 @@ class Puzzle7(input: String) : Puzzle(input) {
 
     private fun canBeSolved(eq: Equation, operators: List<Operator>): Boolean {
         val (expectedResult, inputs) = eq
-        val possibleAnswers = mutableListOf<MutableList<Long>>()
+
+        val summed = inputs.sum()
+        if (summed > expectedResult) return false
+        if (summed == expectedResult) return true
+
+        val possibleAnswers = mutableListOf<MutableSet<Long>>()
 
         inputs.forEachIndexed { i, value ->
             if (i == 0) {
-                possibleAnswers.add(mutableListOf(value))
+                possibleAnswers.add(mutableSetOf(value))
                 return@forEachIndexed
             }
 
-            val answers = mutableListOf<Long>()
+            val answers = mutableSetOf<Long>()
             operators.forEach { operator ->
                 possibleAnswers[i - 1].forEach { answer ->
                     val result = operator.calculate(answer, value)
