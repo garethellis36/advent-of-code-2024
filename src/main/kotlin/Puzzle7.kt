@@ -26,28 +26,26 @@ class Puzzle7(input: String) : Puzzle(input) {
         val (expectedResult, inputs) = eq
 
         val summed = inputs.sum()
+        // too high when summed? impossible to solve using any combination of operators
         if (summed > expectedResult) return false
+        // have we happened to solve it just by summing?
         if (summed == expectedResult) return true
 
-        val possibleAnswers = mutableListOf<MutableSet<Long>>()
+        // try every combination of operators...
+        return inputs
+            .foldIndexed(setOf<Long>()) { i, carry, value ->
+                if (i == 0) return@foldIndexed setOf(value)
 
-        inputs.forEachIndexed { i, value ->
-            if (i == 0) {
-                possibleAnswers.add(mutableSetOf(value))
-                return@forEachIndexed
-            }
-
-            val answers = mutableSetOf<Long>()
-            operators.forEach { operator ->
-                possibleAnswers[i - 1].forEach { answer ->
-                    val result = operator.calculate(answer, value)
-                    if (result <= expectedResult) answers.add(result)
+                val runningTotals = mutableSetOf<Long>()
+                operators.forEach { operator ->
+                    carry.forEach { answer ->
+                        val result = operator.calculate(answer, value)
+                        if (result <= expectedResult) runningTotals.add(result)
+                    }
                 }
+                runningTotals.toSet()
             }
-            possibleAnswers.add(answers)
-        }
-
-        return possibleAnswers[inputs.lastIndex].contains(expectedResult)
+            .contains(expectedResult)
     }
 
     private fun equations() = input().split('\n').map { line ->
