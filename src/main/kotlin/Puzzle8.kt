@@ -14,9 +14,9 @@ class Puzzle8(input: String) : Puzzle(input) {
         val antennaMap = createAntennaMap()
 
         antennaMap.effectiveAntennaPositions().forEach { (_, positions) ->
-            positions.forEachIndexed { i, a ->
-                positions.forEachIndexed { j, b ->
-                    if (j > i) antennaMap.addAntinodes(antinodePositionsFor(a, b))
+            positions.forEach { a ->
+                positions.forEach { b ->
+                    antennaMap.addAntinode(antinodePositionFor(a, b))
                 }
             }
         }
@@ -37,11 +37,6 @@ class Puzzle8(input: String) : Puzzle(input) {
 
         return antennaMap.antinodes().count()
     }
-
-    private fun antinodePositionsFor(a: MapCoordinate, b: MapCoordinate): Pair<MapCoordinate, MapCoordinate> = Pair(
-        antinodePositionFor(a, b),
-        antinodePositionFor(b, a)
-    )
 
     private fun antinodePositionFor(antenna: MapCoordinate, collaborator: MapCoordinate): MapCoordinate {
         val (row, col) = antenna
@@ -105,11 +100,6 @@ class AntennaMap(private val rows: List<MapRow>) {
             .toMap()
             // an antenna with only one position will not have any anti-nodes
             .filter { (_, coords) -> coords.count() > 1 }
-    }
-
-    fun addAntinodes(coords: Pair<MapCoordinate, MapCoordinate>) {
-        addAntinode(coords.first)
-        addAntinode(coords.second)
     }
 
     fun addAntinode(coord: MapCoordinate) {
