@@ -6,6 +6,8 @@ import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.mordant.rendering.TextColors.brightGreen
 import com.github.ajalt.mordant.rendering.TextColors.brightRed
 import java.io.File
+import kotlin.time.Duration
+import kotlin.time.measureTimedValue
 
 class Cli : CliktCommand() {
     val puzzleNumber: Int by argument(help = "The puzzle (day) number of the puzzle").int()
@@ -47,25 +49,29 @@ class Cli : CliktCommand() {
         echo("*** Day #$puzzleNumber ***")
         echo()
 
-        val puzzleExamplePart1 = createPuzzle(part1ExampleInputFile)
-        val puzzleExamplePart2 = createPuzzle(part2ExampleInputFile)
-
         echo("Using example input:")
-        echo(exampleResultOutput(1, puzzleExamplePart1.part1ExampleSolution, puzzleExamplePart1.part1()))
-        echo(exampleResultOutput(2, puzzleExamplePart1.part2ExampleSolution, puzzleExamplePart2.part2()))
+        runAndReportExample(1, createPuzzle(part1ExampleInputFile))
+        runAndReportExample(2, createPuzzle(part2ExampleInputFile))
         echo()
 
         val puzzle = createPuzzle(realInputFile)
         echo("Using real input:")
-        echo(realResultOutput(1, puzzle.part1()))
-        echo(realResultOutput(2, puzzle.part2()))
+        runAndReportReal(1, puzzle)
+        runAndReportReal(2, puzzle)
     }
 
-    private fun exampleResultOutput(part: Int, expected: Any, actual: Any): String {
-        return "Part $part solution: $actual " + (if (expected == actual) brightGreen("OK") else brightRed("expected $expected"))
+    private fun runAndReportExample(part: Int, puzzle: Puzzle) {
+        val (result, duration) = measureTimedValue { if (part == 1) puzzle.part1() else puzzle.part2() }
+        val expected = if (part == 1) puzzle.part1ExampleSolution else puzzle.part2ExampleSolution
+        echo("Part $part solution: $result " + (if (expected == result) brightGreen("OK") else brightRed("expected $expected")) + " [took ${duration}]")
     }
 
-    private fun realResultOutput(part: Int, result: Any): String {
-        return "Part $part solution: $result"
+    private fun runAndReportReal(part: Int, puzzle: Puzzle) {
+        val (result, duration) = measureTimedValue { if (part == 1) puzzle.part1() else puzzle.part2() }
+        echo("Part $part solution: $result [took ${duration}]")
+    }
+
+    private fun getFriendlyDuration(duration: Duration): String {
+        return duration.toString()
     }
 }
