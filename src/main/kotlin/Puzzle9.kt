@@ -5,8 +5,7 @@ class Puzzle9(input: String) : Puzzle(input) {
     override val part2ExampleSolution: Long = 2858
 
     override fun part1(): Long = createDisk().compact().checksum()
-
-    override fun part2(): Long = -1
+    override fun part2(): Long = createDisk().optimize().checksum()
 
     private fun createDisk(): Disk {
         val fileDescriptors = mutableListOf<Int>()
@@ -23,7 +22,7 @@ class Puzzle9(input: String) : Puzzle(input) {
         for (i in fileDescriptors.indices) {
             // add n FileBlocks to blocks according to value of fileDescriptors[i]
             (1..fileDescriptors[i]).forEach { _ ->
-                blocks[blockIndex] = FileBlock(i)
+                blocks[blockIndex] = FileBlock(i, fileDescriptors[i])
                 blockIndex++
             }
             // skip m indices in blocks according to value of freeBlockDescriptors[i] (if set)
@@ -34,7 +33,7 @@ class Puzzle9(input: String) : Puzzle(input) {
     }
 }
 
-class FileBlock(val id: Int)
+class FileBlock(val id: Int, val totalFileLength: Int)
 
 class Disk(private val blocks: Array<FileBlock?>) {
 
@@ -67,12 +66,51 @@ class Disk(private val blocks: Array<FileBlock?>) {
         return this
     }
 
+    fun optimize(): Disk {
+        run breaking@{
+            val movedFiles = mutableSetOf<Int>()
+            val filesThatCantBeMoved = mutableSetOf<Int>()
+            fileBlockIndices.reversed().forEach { fileBlockIndex ->
+                val file = get(fileBlockIndex) ?: return@forEach
+
+                if (file.id in movedFiles) return@forEach
+                if (file.id in filesThatCantBeMoved) return@forEach
+
+                val gapStart = findGapBefore(file.totalFileLength)
+                if (gapStart == -1 || gapStart > fileBlockIndex) {
+                    filesThatCantBeMoved.add(file.id)
+                    return@forEach
+                }
+
+                (fileBlockIndex downTo (fileBlockIndex - file.totalFileLength + 1))
+                    .forEachIndexed { i, it -> move(it, gapStart + i) }
+                movedFiles.add(file.id)
+            }
+        }
+        return this
+    }
+
+    private fun get(index: Int) = blocks[index]
+
+    private fun findGapBefore(length: Int): Int {
+        if (length == 1) return freeBlockIndices.first()
+
+        freeBlockIndices.windowed(length).forEach {
+            if (it.last() - it.first() == length - 1) return it.first()
+        }
+
+        return -1
+    }
+
     private fun move(fromIndex: Int, toIndex: Int) {
         blocks[toIndex] = blocks[fromIndex].also { blocks[fromIndex] = null }
 
-        freeBlockIndices.removeFirst()
-        fileBlockIndices.removeLast()
-        freeBlockIndices.add(fromIndex)
-        freeBlockIndices.sort()
+        fileBlockIndices.remove(fromIndex)
+
+        freeBlockIndices.apply {
+            remove(toIndex)
+            add(fromIndex)
+            sort()
+        }
     }
 }
