@@ -4,38 +4,46 @@ class Puzzle11(input: String) : Puzzle(input) {
     val numberOfBlinks = 25
 
     override val part1ExampleSolution: Long = 55312
-    override val part2ExampleSolution: Long = -1
+    override val part2ExampleSolution: Long = 65601038650482
 
-    override fun part1(): Long {
-        var stones = Stones(input().split(" ").map(String::toLong))
+    override fun part1(): Long = createStones().refresh(25).count()
 
-        for (blink in 1..numberOfBlinks) {
-            stones = stones.refresh()
-        }
+    override fun part2(): Long = createStones().refresh(75).count()
 
-        return stones.count()
-    }
-
-    override fun part2(): Long {
-        return 0
+    private fun createStones(): Stones {
+        val numbers = input().split(" ").map(String::toLong)
+        val map = mutableMapOf<Long, Long>()
+        numbers.forEach { map[it] = (map[it] ?: 0) + 1 }
+        return Stones(map.toMap())
     }
 }
 
-class Stones(private val stones: List<Long>) {
-    fun refresh(): Stones = Stones(
-        stones.map {
-            if (it == 0L) return@map listOf(1L)
+typealias StoneNumber = Long
+typealias Occurrences = Long
 
-            val asString: String = it.toString()
-            if (asString.length % 2 == 0) return@map asString.chunked(asString.length / 2).map(String::toLong)
+class Stones(val stones: Map<StoneNumber, Occurrences>) {
+    fun refresh(times: Int): Stones {
+        var stonesCopy = stones.toMutableMap()
 
-            listOf(it * 2024)
-        }.flatten()
-    )
+        repeat(times) {
+            val newMap = mutableMapOf<StoneNumber, Occurrences>()
+            stonesCopy.forEach { (n, freq) -> nextValues(n).forEach { newMap[it] = (newMap[it] ?: 0) + freq } }
+            stonesCopy = newMap
+        }
 
-    fun count(): Long {
-        return stones.count().toLong()
+        return Stones(stonesCopy)
     }
+
+    private fun nextValues(n: StoneNumber): List<StoneNumber> {
+        if (n == 0L) return listOf(1L)
+
+        val asString = n.toString()
+        if (asString.length % 2 == 0) return asString.chunked(asString.length / 2).map(String::toLong)
+
+        return listOf(n * 2024)
+    }
+
+    fun count(): Long = stones.values.sum()
 
     private fun toList() = stones
 
