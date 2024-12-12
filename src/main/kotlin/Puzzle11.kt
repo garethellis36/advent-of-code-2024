@@ -37,8 +37,9 @@ class Stones(val stones: Map<StoneNumber, Occurrences>) {
     private fun nextValues(n: StoneNumber): List<StoneNumber> {
         if (n == 0L) return listOf(1L)
 
-        val asString = n.toString()
-        if (asString.length % 2 == 0) return asString.chunked(asString.length / 2).map(String::toLong)
+        if (n.digits().isEven) return n.toString().run {
+            chunked(length / 2).map(String::toLong)
+        }
 
         return listOf(n * 2024)
     }
