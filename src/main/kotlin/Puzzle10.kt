@@ -1,7 +1,7 @@
 package org.garethellis.adventofcode.twentyfour
 
 typealias TrailMapGridCoordinate = String
-typealias TrailMapPositions = MutableMap<TrailMapGridCoordinate, Int>
+typealias TrailMapPositions = Map<TrailMapGridCoordinate, Int>
 typealias TrailheadPosition = TrailMapGridCoordinate
 typealias TrailheadPositions = Set<TrailheadPosition>
 
@@ -20,11 +20,11 @@ class Puzzle10(input: String) : Puzzle(input) {
     }
 
     private fun createMap(): TrailMap {
-        val positions: TrailMapPositions = mutableMapOf()
+        val positions: MutableMap<TrailMapGridCoordinate, Int> = mutableMapOf()
         input().split("\n").forEachIndexed { r, chars ->
             chars.toCharArray().forEachIndexed { c, ch -> positions["${r}_${c}"] = ch.digitToInt() }
         }
-        return TrailMap(positions)
+        return TrailMap(positions.toMap())
     }
 }
 
