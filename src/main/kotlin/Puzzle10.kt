@@ -5,6 +5,29 @@ typealias TrailMapPositions = MutableMap<TrailMapGridCoordinate, Int>
 typealias TrailheadPosition = TrailMapGridCoordinate
 typealias TrailheadPositions = Set<TrailheadPosition>
 
+class Puzzle10(input: String) : Puzzle(input) {
+    override val part1ExampleSolution: Int = 36
+    override val part2ExampleSolution: Int = 81
+
+    override fun part1(): Int {
+        val map = createMap()
+        return map.trailheads().fold(0) { s, th -> s + map.scoreOf(th) }
+    }
+
+    override fun part2(): Int {
+        val map = createMap()
+        return map.trailheads().fold(0) { s, th -> s + map.ratingOf(th) }
+    }
+
+    private fun createMap(): TrailMap {
+        val positions: TrailMapPositions = mutableMapOf()
+        input().split("\n").forEachIndexed { r, chars ->
+            chars.toCharArray().forEachIndexed { c, ch -> positions["${r}_${c}"] = ch.digitToInt() }
+        }
+        return TrailMap(positions)
+    }
+}
+
 class TrailMap(private val positions: TrailMapPositions) {
     fun trailheads(): TrailheadPositions = positions.filter { entry -> entry.value == 0 }.keys
 
@@ -15,6 +38,18 @@ class TrailMap(private val positions: TrailMapPositions) {
             val newPositions = mutableSetOf<TrailheadPosition>()
             positions.forEach { p -> nextLevels(p, l).forEach { np -> newPositions.add(np) } }
             positions = newPositions.toSet()
+        }
+
+        return positions.count()
+    }
+
+    fun ratingOf(trailhead: TrailheadPosition): Int {
+        var positions = listOf(trailhead)
+
+        (0..<9).forEach { l ->
+            val newPositions = mutableListOf<TrailheadPosition>()
+            positions.forEach { p -> nextLevels(p, l).forEach { np -> newPositions.add(np) } }
+            positions = newPositions.toList()
         }
 
         return positions.count()
@@ -34,26 +69,4 @@ class TrailMap(private val positions: TrailMapPositions) {
     }
 
     private fun valueAt(row: Int, col: Int) = positions["${row}_${col}"]
-}
-
-class Puzzle10(input: String) : Puzzle(input) {
-    override val part1ExampleSolution: Int = 36
-    override val part2ExampleSolution: Int = -1
-
-    override fun part1(): Int {
-        val map = createMap()
-        return map.trailheads().fold(0) { s, th -> s + map.scoreOf(th) }
-    }
-
-    override fun part2(): Int {
-        return 0
-    }
-
-    private fun createMap(): TrailMap {
-        val positions: TrailMapPositions = mutableMapOf()
-        input().split("\n").forEachIndexed { r, chars ->
-            chars.toCharArray().forEachIndexed { c, ch -> positions["${r}_${c}"] = ch.digitToInt() }
-        }
-        return TrailMap(positions)
-    }
 }
