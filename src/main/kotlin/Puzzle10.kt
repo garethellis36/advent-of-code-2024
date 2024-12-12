@@ -3,21 +3,13 @@ package org.garethellis.adventofcode.twentyfour
 typealias TrailMapGridCoordinate = String
 typealias TrailMapPositions = Map<TrailMapGridCoordinate, Int>
 typealias TrailheadPosition = TrailMapGridCoordinate
-typealias TrailheadPositions = Set<TrailheadPosition>
 
 class Puzzle10(input: String) : Puzzle(input) {
     override val part1ExampleSolution: Int = 36
     override val part2ExampleSolution: Int = 81
 
-    override fun part1(): Int {
-        val map = createMap()
-        return map.trailheads().fold(0) { s, th -> s + map.scoreOf(th) }
-    }
-
-    override fun part2(): Int {
-        val map = createMap()
-        return map.trailheads().fold(0) { s, th -> s + map.ratingOf(th) }
-    }
+    override fun part1(): Int = createMap().trailheads().fold(0) { s, th -> s + th.score() }
+    override fun part2(): Int = createMap().trailheads().fold(0) { s, th -> s + th.rating() }
 
     private fun createMap(): TrailMap {
         val positions: MutableMap<TrailMapGridCoordinate, Int> = mutableMapOf()
@@ -29,21 +21,24 @@ class Puzzle10(input: String) : Puzzle(input) {
 }
 
 class TrailMap(private val positions: TrailMapPositions) {
-    fun trailheads(): TrailheadPositions = positions.filter { entry -> entry.value == 0 }.keys
+    fun trailheads(): List<Trailhead> = positions.filter { entry -> entry.value == 0 }.keys.map { Trailhead(it, this) }
+    fun levelAt(position: TrailheadPosition): Int? = positions[position]
+}
 
+class Trailhead(private val position: TrailheadPosition, private val map: TrailMap) {
     /**
      * score = number of unique highest points you can reach from this trailhead
      */
-    fun scoreOf(trailhead: TrailheadPosition): Int = reachableHighestPointsFrom(trailhead).toSet().count()
+    fun score(): Int = reachableHighestPoints().toSet().count()
 
     /**
      * rating = number of trails which reach any of the accessible highest points (i.e. some trailheads lead to the same
      * highest point via multiple trails)
      */
-    fun ratingOf(trailhead: TrailheadPosition): Int = reachableHighestPointsFrom(trailhead).count()
+    fun rating(): Int = reachableHighestPoints().count()
 
-    private fun reachableHighestPointsFrom(trailhead: TrailheadPosition): List<TrailMapGridCoordinate> {
-        var positions = listOf(trailhead)
+    private fun reachableHighestPoints(): List<TrailMapGridCoordinate> {
+        var positions = listOf(position)
 
         (0..<9).forEach { l ->
             val newPositions = mutableListOf<TrailheadPosition>()
@@ -65,7 +60,8 @@ class TrailMap(private val positions: TrailMapPositions) {
         val left = "${row}_${col - 1}"
         val right = "${row}_${col + 1}"
 
-        return listOf(up, down, left, right)
-            .filter { positions.contains(it) && positions[it] == currentLevel + 1 }
+        return listOf(up, down, left, right).filter { map.levelAt(it) == currentLevel + 1 }
     }
 }
+
+
